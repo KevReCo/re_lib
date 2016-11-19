@@ -1,5 +1,3 @@
-## re_lib
-
 ### re_lib - Readable library
 
 Readable, small and portable C and C++ library.
