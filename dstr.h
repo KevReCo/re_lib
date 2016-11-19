@@ -1,4 +1,4 @@
-// dstr.h - v0.1 - KevReCo - public domain
+// dstr.h - v0.1 - kevreco - CC0 1.0 Licence (public domain)
 
 /*
 
@@ -13,7 +13,7 @@ NOTES:
 CHANGES (DD/MM/YYYY):
 ====================
 
-- 13/11/2016 -
+- 13/11/2016 - First implementation
 
 TODO:
 ====
@@ -165,12 +165,6 @@ void dstr_ltrim(dstr* s);
 void dstr_rtrim(dstr* s);
 
 void dstr_find_and_replace(dstr*s, const dstr_char_t* to_replaced, const dstr_char_t* with);
-
-//-------------------------------------------------------------------------
-// TEST: (this section should be commented)
-//-------------------------------------------------------------------------
-
-void dstr_testsuite();
 
 //-------------------------------------------------------------------------
 // Private Declaration
