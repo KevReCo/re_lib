@@ -1,9 +1,13 @@
 ## re_lib
 
-### Readable library
+### re_lib - Readable library
 
 Readable, small and portable C and C++ library.
-I try to make single file only
+
+All libraries should be easy to read, to understand, and to customize.
+
+I'm trying to make single-file libraries only for convenience.
+
 
 ### Description
 
