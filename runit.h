@@ -36,7 +36,7 @@ static const char* runit_name = 0; // Optional name to identify where we are dur
     printf("===== runit %s Result =====\n", #X); \
     if (runit_fail && runit_count) { \
         fprintf(stderr, "\t%d/%d failed.\n", runit_fail, runit_count); \
-    } if (!runit_fail && !runit_count) { \
+    } else if (!runit_fail && !runit_count) { \
         fprintf(stderr, "\tNo test performed.\n" ); \
     } else {\
         fprintf(stdout,"\tOK: %d/%d successul.\n", runit_count, runit_count); \
