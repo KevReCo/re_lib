@@ -1,5 +1,37 @@
-#ifndef RUNIT_H
-#define RUNIT_H
+// runit.h - v0.1 - kevreco - CC0 1.0 Licence (public domain)
+
+/*
+
+NOTES:
+=====
+
+- Minimalistic Unit Test framework with two function (assert & run).
+
+
+CHANGES (DD/MM/YYYY):
+====================
+
+- 19/11/2016: First implementation
+
+TODO:
+====
+
+- implement better error system.
+  - register an int and then dump the associate string, on demand.
+- add namespace name prior to names ("parse_name" => "_rjson_parse_name").
+- cleanup parse_number.
+- add "RJON_FOR_EACH" macro
+
+DOCUMENTATION:
+
+- Only use RUNIT_ASSERT anywhere and use RUNIT_RUN at upper level
+- See the example at the end of file.
+
+*/
+
+
+#ifndef RE_RUNIT_H
+#define RE_RUNIT_H
 
 /// Very simple unit testing framework for C/C++
 
@@ -46,18 +78,38 @@ static const char* runit_name = 0; // Optional name to identify where we are dur
 #define RUNIT_SET_NAME(X) runit_name = X
 
 
-/* Example of use
+/*
 
+Example 1:
+=========
+
+int one = 1;
+int two = 3;
+
+static void unit_test_all_in_one() {
+    RUNIT_ASSERT(one == 1, "error, one != 1");
+    RUNIT_ASSERT(two == 2, "error, two != 2");
+}
+
+int main(int argc, char **argv) {
+
+    RUNIT_RUN(unit_test_all_in_one);
+}
+
+Example 2:
+=========
 
 int one = 1;
 int two = 3;
 
 static void unit_test_one() {
     RUNIT_ASSERT(one == 1, "error, one != 1");
+    // many others ...
 }
 
 static void unit_test_two() {
     RUNIT_ASSERT(two == 2, "error, two != 2");
+     // many others ...
 }
 
 static void unit_test_all() {
@@ -65,19 +117,12 @@ static void unit_test_all() {
     RUNIT_RUN(unit_test_two);
 }
 
-static void unit_test_all_in_one() {
-    unit_test_one();
-    unit_test_two();
-}
 
 int main(int argc, char **argv) {
 
     unit_test_all();
-
-    // Do the same thing with only one run
-    RUNIT_RUN(unit_test_all_in_one);
 }
 
 */
 
-#endif // ruNIT_H
+#endif // RE_RUNIT_H
