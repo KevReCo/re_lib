@@ -65,7 +65,7 @@ typedef int             rjson_bool_t;
 typedef void*           rej_value_type;
 typedef rej_value_type* rej_darray_it;
 
-struct rjson;
+
 
 // UTF-8 string
 typedef struct rjson_string {
@@ -75,15 +75,15 @@ typedef struct rjson_string {
 
 } rjson_string; // rjson_string
 
-enum RFlags {
-    kRFlags_Float,
-    kRFlags_UInt,
-    kRFlags_SInt
-};
+typedef enum RJ_Flags {
+    RJ_Flags_Float,
+    RJ_Flags_Uint,
+    RJ_Flags_SInt
+} RJ_Flags;
 
 typedef struct rjson_number {
 
-    RFlags flags;
+    RJ_Flags flags;
 
     union {
         unsigned long long u;
@@ -93,8 +93,10 @@ typedef struct rjson_number {
 
 } rjson_number;
 
-typedef struct rjson rjson;
 
+typedef struct rjson rjson; // Forward declaration
+
+//struct rjson;
 typedef struct rjson_object {
 
     rjson_string* name;
@@ -113,15 +115,16 @@ typedef struct rjson_array {
 } rjson_array;
 
 //-------------------------------------------------------------------------
-// rjson (API)
+// rjson (API) BEGIN
 //-------------------------------------------------------------------------
-
-#define REJ_NULL     0
-#define REJ_OBJECT   1
-#define REJ_ARRAY    2
-#define REJ_STRING   3
-#define REJ_NUMBER   4
-#define REJ_BOOL     5
+enum {
+    RJ_NULL   = 0,
+    RJ_OBJECT = 1,
+    RJ_ARRAY  = 2,
+    RJ_STRING = 3,
+    RJ_NUMBER = 4,
+    RJ_BOOL   = 5
+};
 
 typedef struct rjson {
 
@@ -161,7 +164,7 @@ static void rjson_to_file(FILE* file, const rjson* value);
 
 
 //-------------------------------------------------------------------------
-// END of rjson (API)
+// rjson (API) END
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -277,13 +280,13 @@ rjson* rjson_parse(char* pool, size_t count, const char* src, unsigned int len) 
     if (*parser.cursor == '{') {
 
         result = (rjson*)_rjson_new(&parser, sizeof (rjson));
-        result->type = REJ_OBJECT;
+        result->type = RJ_OBJECT;
         result->data = (void*)_rjson_parse_object(&parser);
 
     } else if (*parser.cursor == '[') {
 
         result = (rjson*)_rjson_new(&parser, sizeof (rjson));
-        result->type = REJ_ARRAY;
+        result->type = RJ_ARRAY;
         result->data = (void*)_rjson_parse_array(&parser);
     }
 
@@ -340,7 +343,7 @@ static inline void rjson_to_file(FILE* f, const rjson* value)
     if (value) {
         switch (value->type) {
 
-        case REJ_OBJECT: {
+        case RJ_OBJECT: {
             fputc('{', f);
 
             const rjson_object* obj = (const rjson_object*)value->data;
@@ -365,7 +368,7 @@ static inline void rjson_to_file(FILE* f, const rjson* value)
             break;
         }
 
-        case REJ_ARRAY: {
+        case RJ_ARRAY: {
             fputc('[', f);
 
             const rjson_array* arr = (const rjson_array*)value->data;
@@ -382,14 +385,14 @@ static inline void rjson_to_file(FILE* f, const rjson* value)
             break;
         }
 
-        case REJ_STRING:
+        case RJ_STRING:
             _rjson_print_string(f, (const rjson_string*)value->data);
             break;
 
-        case REJ_NUMBER: {
+        case RJ_NUMBER: {
             const rjson_number* num = (const rjson_number*)value->data;
             switch(num->flags) {
-            case kRFlags_Float: {
+            case RJ_Flags_Float: {
                 const double dbl = num->value.d;
                 const size_t precision = _rjson_get_precision(dbl);
                 if (precision == 1) {
@@ -410,12 +413,12 @@ static inline void rjson_to_file(FILE* f, const rjson* value)
 #define FORMAT_U64 "%llu"
 #endif
 
-            case kRFlags_UInt: {
+            case RJ_Flags_Uint: {
                 //fprintf(stdout, "%llu\n", num->value.u);
                 fprintf(f, FORMAT_U64, num->value.u);
                 break;
             }
-            case kRFlags_SInt: {
+            case RJ_Flags_SInt: {
                 //fprintf(stdout, "%lld\n", num->value.s);
 
                 fprintf(f, FORMAT_S64, num->value.s);
@@ -426,12 +429,12 @@ static inline void rjson_to_file(FILE* f, const rjson* value)
             break;
         } // case REJ_NUMBER
 
-        case REJ_BOOL: {
+        case RJ_BOOL: {
             int boolean = (int)value->data;
             boolean ? fputs("true", f) : fputs("false", f);
             break;
         }
-        case REJ_NULL:
+        case RJ_NULL:
             fputs("null", f);
             break;
         default:
@@ -571,7 +574,7 @@ static inline rjson_number* _rjson_parse_number(_rjson_parser* parser) {
     enum SIGN { kPositive, kNegative } sign = kPositive;
 
     rjson_number* number = (rjson_number*)_rjson_new(parser, sizeof(rjson_number));
-    number->flags = kRFlags_UInt;
+    number->flags = RJ_Flags_Uint;
 
     const char* start = parser->cursor;
 
@@ -603,7 +606,7 @@ static inline rjson_number* _rjson_parse_number(_rjson_parser* parser) {
     if (*parser->cursor == '.') {
         _rjson_consume_one(parser); // skip '.'
         _rjson_consume_digits(parser);
-        number->flags = kRFlags_Float;
+        number->flags = RJ_Flags_Float;
 
     }
 
@@ -616,20 +619,20 @@ static inline rjson_number* _rjson_parse_number(_rjson_parser* parser) {
         }
         _rjson_assert(_rjson_is_digit(*parser->cursor));
         _rjson_consume_digits(parser);
-        number->flags = kRFlags_Float;
+        number->flags = RJ_Flags_Float;
     }
 
 
 
     D(printf("number: %.*s\n", number->length, start));
 
-    if (number->flags == kRFlags_Float) {
+    if (number->flags == RJ_Flags_Float) {
         number->value.d = strtod(start, (char**)&parser->cursor);
     } else if (sign == kPositive) {
-        number->flags = kRFlags_UInt;
+        number->flags = RJ_Flags_Uint;
         number->value.u = strtoull(start, (char**)&parser->cursor, 10);
     } else if (sign == kNegative) {
-        number->flags = kRFlags_SInt;
+        number->flags = RJ_Flags_SInt;
         number->value.s = strtoll(start, (char**)&parser->cursor, 10);
     }
 
@@ -715,17 +718,17 @@ static inline rjson* _rjson_parse_value(_rjson_parser* parser) {
 
     case '{':
         result->data = (void*)_rjson_parse_object(parser);
-        result->type = REJ_OBJECT;
+        result->type = RJ_OBJECT;
         break;
     case '[':{
         result->data = (void*)_rjson_parse_array(parser);
-        result->type = REJ_ARRAY;
+        result->type = RJ_ARRAY;
         break;
     }
 
     case '"': {
         result->data = (void*)_rjson_parse_string(parser);
-        result->type = REJ_STRING;
+        result->type = RJ_STRING;
         break;
     }
 
@@ -737,7 +740,7 @@ static inline rjson* _rjson_parse_value(_rjson_parser* parser) {
     case '9':
     {
         result->data = (void*)_rjson_parse_number(parser);
-        result->type = REJ_NUMBER;
+        result->type = RJ_NUMBER;
         break;
     }
 
@@ -746,7 +749,7 @@ static inline rjson* _rjson_parse_value(_rjson_parser* parser) {
         if(strncmp(parser->cursor, "true", 4) == 0) {
 
             result->bool_value = 1;
-            result->type = REJ_BOOL;
+            result->type = RJ_BOOL;
 
             for (int i = 0; i < 3; ++i)
                 _rjson_consume_one(parser);
@@ -757,7 +760,7 @@ static inline rjson* _rjson_parse_value(_rjson_parser* parser) {
     case 'f':
         if(strncmp(parser->cursor, "false", 5) == 0) {
             result->bool_value = 0;
-            result->type = REJ_BOOL;
+            result->type = RJ_BOOL;
 
             for (int i = 0; i < 4; ++i)
                 _rjson_consume_one(parser);
@@ -766,7 +769,7 @@ static inline rjson* _rjson_parse_value(_rjson_parser* parser) {
         break;
     case 'n':
         if(strncmp(parser->cursor, "null", 4) == 0) {
-            result->type = REJ_NULL;
+            result->type = RJ_NULL;
 
             for (int i = 0; i < 3; ++i)
                 _rjson_consume_one(parser);
