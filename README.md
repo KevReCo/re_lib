@@ -13,9 +13,9 @@ Should be easy to read, to use, to compile, to modify. Most of libraries can be 
 
 | name | c/cpp | version | description |
 | --- | --- | --- | --- |
-| [dstr.h](/dstr.h) | c99+ | 0.1 | Close C implementation of std::string |
-| [rjson.h](/rjson.h) | c99+ | 0.1 | Zero allocation json reader |
-| [runit.h](/runit.h) | c99+ | 0.1 | Minimalistic Unit Test library |
+| [dstr.h](/dstr.h) | c89+ | 0.1 | Close C implementation of std::string |
+| [rjson.h](/rjson.h) | c89+ | 0.1 | Zero allocation json reader |
+| [runit.h](/runit.h) | c89+ | 0.1 | Minimalistic Unit Test library |
 
 ### Licence
 
