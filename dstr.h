@@ -801,6 +801,17 @@ inline void dstr_swap(dstr* s, dstr* other) {
     *other = tmp;
 } // dstr_swap
 
+
+//-------------------------------------------------------------------------
+// dstr - API Implementation - END
+//-------------------------------------------------------------------------
+
+
+//-------------------------------------------------------------------------
+// dstr - Extended Implementation - BEGIN
+//-------------------------------------------------------------------------
+
+
 void dstr_trim(dstr* s)
 {
     dstr_char_t* cursor_left  = s->data;
@@ -891,14 +902,6 @@ int dstr_append_fmt(dstr* s, const char* fmt, ...)
     return result;
 }
 
-//-------------------------------------------------------------------------
-// dstr - API Implementation - END
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-// dstr - Extended Implementation - BEGIN
-//-------------------------------------------------------------------------
-
 dstr_ref dstr_make_ref(const dstr_char_t* str) {
     dstr_ref result = {
         0,
@@ -972,7 +975,7 @@ void* _dstr_memory_find(const void* memory_ptr, size_t mem_len, const void* patt
     }
 
     return 0;
-} // _dstr_mem_find
+} // _dstr_memory_find
 
 //-------------------------------------------------------------------------
 // dstr - Private Implementation - END
