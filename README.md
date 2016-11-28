@@ -1,6 +1,6 @@
 ### re_lib - Readable library
 
-Readable, small and portable C and C++ library.
+Readable, small, portable and maintainable C and C++ library.
 
 All libraries should be easy to read, to understand, and to customize.
 
@@ -20,7 +20,9 @@ Should be easy to read, to use, to compile, to modify. Most of libraries can be 
 ### Licence
 
 All repository's files are under the Creative Common Zero (1.0) licence.
-Some contry legaly don't recognize the Public Domain.
+
+Some contries don't recognize the Public Domain.
+
 CC0 is the closest licence to the *Public Domain*.
 
 See: [LICENCE.CC0](LICENCE.CC0.txt)
