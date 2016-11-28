@@ -248,7 +248,6 @@ int    _dstr_allocated_data(dstr* s);
 size_t _dstr_growing_policy(dstr* s, size_t capacity);
 // Find a memory block
 void*  _dstr_memory_find(const void *memory_ptr, size_t mem_len, const void *pattern_ptr, size_t pattern_len);
-void*  _dstr_memory_find2(const void *memory_ptr, const void *memory_end, const void *pattern_ptr, size_t pattern_len);
 
 //-------------------------------------------------------------------------
 // dstr - Private - END
